@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>image-wasm</title>
+</head>
+
+<body>
+  <input type="file" accept="image/*" id="imageInput" /> <br />
+  <br />
+  <select id="filter">
+    <option value="grayscale">Grayscale</option>
+    <option value="sepia">Sepia</option>
+    <option value="invert">Invert</option>
+    <option value="removeRed">Remove Red</option>
+    <option value="removeGreen">Remove Green</option>
+    <option value="removeBlue">Remove Blue</option>
+    <option value="swapRedBlue">Swap Red+Blue</option>
+    <option value="swapRedGreen">Swap Red+Green</option>
+    <option value="swapBlueGreen">Swap Blue+Green</option>
+    <option value="swapAlphaRed">Swap Alpha+Red</option>
+    <option value="swapAlphaGreen">Swap Alpha+Green</option>
+    <option value="swapAlphaBlue">Swap Alpha+Blue</option>
+    <option value="neue">Neue</option>
+    <option value="lix">Lix</option>
+    <option value="ryo">Ryo</option>
+    <option value="redden">Redden</option>
+  </select>
+  <input type="button" id="singleThread" value="Process (single thread)" disabled />
+  <input type="button" id="multiThread" value="Process (multi thread)" disabled />
+  <input type="button" id="restoreButton" value="Restore" />
+  <output id="time"></output>
+  <br />
+  <br />
+  <canvas id="canvas" width="512" height="512"></canvas>
+  <script src="index.js"></script>
+</body>
+</html>
