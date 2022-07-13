@@ -15,6 +15,8 @@ pub use wasm_bindgen_rayon::init_thread_pool;
 
 mod color;
 
+const PIXEL_SIZE: usize = 4;
+
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
@@ -26,12 +28,12 @@ pub struct ImageWasm {
 
 #[cfg(not(feature = "parallel"))]
 fn get_chunked_raw_pixels(img: &mut ImageWasm) -> ChunksMut<u8> {
-    img.raw_pixels.chunks_mut(4)
+    img.raw_pixels.chunks_mut(PIXEL_SIZE)
 }
 
 #[cfg(feature = "parallel")]
 fn get_chunked_raw_pixels(img: &mut ImageWasm) -> ChunksMut<u8> {
-    img.raw_pixels.par_chunks_mut(4)
+    img.raw_pixels.par_chunks_mut(PIXEL_SIZE)
 }
 
 #[wasm_bindgen(js_name = getRawImageData)]
@@ -221,6 +223,33 @@ pub fn ryo(img: &mut ImageWasm) {
         color::set_red(raw_pixel, new_red);
         color::set_blue(raw_pixel, new_blue);
     });
+}
+
+fn channel_grayscale(img: &mut ImageWasm, color_idx: usize) {
+    let chunked_raw_pixels = get_chunked_raw_pixels(img);
+
+    chunked_raw_pixels.for_each(|raw_pixel| {
+        let channel_value = raw_pixel[color_idx];
+
+        color::set_red(raw_pixel, channel_value);
+        color::set_green(raw_pixel, channel_value);
+        color::set_blue(raw_pixel, channel_value);
+    });
+}
+
+#[wasm_bindgen(js_name = redGrayscale)]
+pub fn red_grayscale(img: &mut ImageWasm) {
+    channel_grayscale(img, color::Rgba::RED);
+}
+
+#[wasm_bindgen(js_name = greenGrayscale)]
+pub fn green_grayscale(img: &mut ImageWasm) {
+    channel_grayscale(img, color::Rgba::GREEN);
+}
+
+#[wasm_bindgen(js_name = blueGrayscale)]
+pub fn blue_grayscale(img: &mut ImageWasm) {
+    channel_grayscale(img, color::Rgba::BLUE);
 }
 
 fn set_panic_hook() {
